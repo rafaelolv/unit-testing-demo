@@ -33,9 +33,18 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have app-navbar', () => {});
+  it('should have app-navbar', () => {
+    const navBar = fixture.debugElement.query(By.css('app-nav-bar'));
+    expect(navBar).toBeTruthy();
+  });
 
-  it('should have app-products', () => {});
+  it('should have app-products', () => {
+    const products = fixture.debugElement.query(By.css('app-products'));
+    expect(products).toBeTruthy();
+  });
 
-  it('should test sum of two numbers', () => {});
+  it('should test sum of two numbers', () => {
+    const result = component.add(2, 3);
+    expect(result).toBe(5);
+  });
 });

@@ -45,18 +45,91 @@ describe('ProductsComponent', () => {
   });
 
   describe('should test get products initially', () => {
-    it('should get product data initially', () => {});
+    it('should get product data initially', () => {
+      const mockProducts: Product[] = [
+        { id: '1', title: 'Product 1', price: '10', description: 'Description 1', category: 'Category 1', image: '' },
+        { id: '2', title: 'Product 2', price: '20', description: 'Description 2', category: 'Category 2', image: '' },
+      ];
+  
+      mockProductService.getProducts.and.returnValue(of(mockProducts));
+  
+      component.getProducts();
+  
+      expect(component.productData).toEqual(mockProducts);
 
-    it('should get product data initially on failure', () => {});
+      expect(component.showSpinner).toBeFalse();
+    });
+
+    it('should get product data initially on failure', () => {
+      const error = new Error('Failed to load products');
+
+      mockProductService.getProducts.and.returnValue(throwError(() => error));
+
+      component.getProducts();
+
+      expect(component.showSpinner).toBeFalse();
+
+      expect(matSnackBar.open).toHaveBeenCalledWith('Something went wrong!...', '', {
+        duration: 3000
+      });
+    });
   });
 
-  it('should test openDialog', () => {});
+  it('should test openDialog', () => {
+    component.openDialog();
 
-  it('should test editDialog', () => {});
+    expect(dialog.open).toHaveBeenCalledWith(AddProductComponent, {
+      width: '40%',
+    });
+  });
+
+  it('should test editDialog', () => {
+
+    const mockProduct: Product = {
+      id: '1',
+      title: 'Product 1',
+      price: '10',
+      description: 'Description 1',
+      category: 'Category 1',
+      image: '',
+    };
+
+    component.editProduct(mockProduct);
+
+    expect(dialog.open).toHaveBeenCalledWith(AddProductComponent, {
+      data: mockProduct,
+      width: '40%',
+    });
+  });
 
   describe('should test deleteProduct', () => {
-    it('should test deleteProduct on success', () => {});
+    it('should test deleteProduct on success', () => {
+      const mockProduct = { id: '1', title: 'Product 1' };
+    
+      mockProductService.deleteProduct.and.returnValue(of({}));
 
-    it('should test deleteProduct on failure', () => {});
+      component.deleteProduct(mockProduct);
+
+      expect(mockProductService.deleteProduct).toHaveBeenCalledWith(mockProduct.id);
+
+      expect(matSnackBar.open).toHaveBeenCalledWith('Deleted Successfully!...', '', {
+        duration: 3000
+      });
+    });
+
+    it('should test deleteProduct on failure', () => {
+      const mockProduct = { id: '1', title: 'Product 1' };
+      const error = new Error('Failed to delete product');
+      
+      mockProductService.deleteProduct.and.returnValue(throwError(() => error));
+
+      component.deleteProduct(mockProduct);
+
+      expect(mockProductService.deleteProduct).toHaveBeenCalledWith(mockProduct.id);
+
+      expect(matSnackBar.open).toHaveBeenCalledWith('Something went wrong!...', '', {
+        duration: 3000
+      });
+    });
   });
 });

@@ -23,7 +23,19 @@ describe('NavBarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check menuItems array is initialized', () => {});
+  it('should check menuItems array is initialized', () => {
+    expect(component.menuItems).toBeDefined();
+    expect(component.menuItems.length).toBeGreaterThan(0);
+  });
 
-  it('should check menuItem is rendered', () => {});
+  it('should check menuItem is rendered', () => {
+    fixture.detectChanges();
+
+    const menuItems = fixture.debugElement.queryAll(By.css('li'));
+    expect(menuItems.length).toBe(component.menuItems.length);
+
+    component.menuItems.forEach((item, index) => {
+      expect(menuItems[index].nativeElement.textContent).toContain(item.name);
+    });
+  });
 });
